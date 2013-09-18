@@ -1,0 +1,220 @@
+\documentclass[9pt,onside,a4paper]{article}
+%\usepackage[timestamp,first]{draftcopy}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{makeidx}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage{alltt}
+\usepackage{framed}
+\usepackage{lipsum}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{fullpage}
+\usepackage{xtab}
+
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.2,0,0.4}{#1}}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.2,0.73,0.02}{#1}}
+\newcommand{\hlesc}[1]{\textcolor[rgb]{0.65,0.09,0.38}{#1}}
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.09,0.38,0.65}{#1}}
+\newcommand{\hlpps}[1]{\textcolor[rgb]{0.4,0.2,0}{#1}}
+\newcommand{\hlslc}[1]{\textcolor[rgb]{0,0.4,0.2}{#1}}
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0,0.4,0.2}{#1}}
+\newcommand{\hlppc}[1]{\textcolor[rgb]{0.33,0.45,0.69}{#1}}
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0.33,0.33,0.33}{#1}}
+\newcommand{\hllin}[1]{\textcolor[rgb]{0.6,0.6,0.6}{#1}}
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{1,0.19,0.19}{#1}}
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.96,0.55,0.14}{#1}}
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,1}{#1}}
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.82,0.11,0.93}{#1}}
+\newcommand{\hlred}[1]{\textcolor[rgb]{1.0,0.0,0.0}{#1}}
+
+
+\definecolor{shadecolor}{rgb}{0.92,0.92,0.92}
+
+
+\author{Wang Feng}
+\title{Derivative Tutorial}
+\begin{document}
+%\maketitle
+
+\section{Headers, Namespace and Compilation}
+
+\paragraph{The header file for derivative is\\}
+\hlstd{}\hlppc{\#include\ $<$derivative/derivative.hpp$>$}
+
+\paragraph{The header file for second derivative is\\}
+\hlstd{}\hlppc{\#include\ $<$derivative/second\_derivative.hpp$>$}
+
+\paragraph{The namespace of derivative is\\}
+\hlstd{}\hlkwa{using\ namespace\ }{numeric}\hlopt{;}\hspace*{\fill} 
+
+\paragraph{A typical commandline compilation is\\}
+\hlstd{}g++ -o test test.cc -std=c++11 -O2 -I\hlred{PATH/TO/HEAD/FILE}
+
+\section{Derivative}
+
+\subsection{derivatives of normal functions}
+
+\paragraph{To calculate the derivative of a simple function $ f(x,y) = \sin x \cos y $, we first need to define the function in c++ code:}
+\paragraph{ \hlstd{}\hspace*{\fill}\\
+\hlkwb{double\ }\hlstd{}\hlkwd{fxy\ }\hlstd{}\hlopt{(\ }\hlstd{}\hlkwb{double\ }\hlstd{x}\hlopt{,\ }\hlstd{}\hlkwb{double\ }\hlstd{y\ }\hlopt{)}\hspace*{\fill}\\
+\hlstd{}\hlopt{\{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{std}\hlopt{::}\hlstd{}\hlkwd{sin}\hlstd{}\hlopt{(\ }\hlstd{x\ }\hlopt{)\ {*}\ }\hlstd{std}\hlopt{::}\hlstd{}\hlkwd{cos}\hlstd{}\hlopt{(\ }\hlstd{y\ }\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlopt{\}}\hspace*{\fill}\\
+}
+
+\paragraph{then generate the $\frac{\partial{f(x,y)}}{\partial{x}}$ using\\} 
+
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{dfx\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{make\textunderscore derivative}\hlopt{$<$}\hlstd{}\hlnum{0}\hlstd{}\hlopt{$>$(\ }\hlstd{fxy\ }\hlopt{);}\hspace*{\fill}\\
+
+\paragraph{and $\frac{\partial{f(x,y)}}{\partial{y}}$ using\\}
+
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{dfy\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{make\textunderscore derivative}\hlopt{$<$}\hlstd{}\hlnum{1}\hlstd{}\hlopt{$>$(\ }\hlstd{fxy\ }\hlopt{);}\hspace*{\fill}\\
+
+\paragraph{to evaluate $\frac{\partial{f(x,y)}}{\partial{x}} \Big|_{(1,2)}$, we simply call \hlkwd{dfx} as a normal c++ function\\}
+
+\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"df\ /\ dx\ at\ (\ 1,\ 2\ )\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{dfx}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2\ }\hlstd{}\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+
+\paragraph{also, to evaluate $\frac{\partial{f(x,y)}}{\partial{y}} \Big|_{(1,2)}$\\}
+
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"df\ /\ dy\ at\ (\ 1,\ 2\ )\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{dfy}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2\ }\hlstd{}\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+
+\subsection{derivatives of functions that receive a pointer as argument}
+
+\paragraph{Same function as in the previous subsection, but we make some modification to make it receive only one pointer:\\}
+\paragraph{
+\hlkwb{double\ }\hlstd{}\hlkwd{fxy}\hlstd{}\hlopt{(\ }\hlstd{}\hlkwb{double}\hlstd{}\hlopt{{*}\ }\hlstd{x\ }\hlopt{)}\hspace*{\fill}\\
+\hlstd{}\hlopt{\{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{std}\hlopt{::}\hlstd{}\hlkwd{sin}\hlstd{}\hlopt{(}\hlstd{x}\hlopt{{[}}\hlstd{}\hlnum{0}\hlstd{}\hlopt{{]})\ {*}\ }\hlstd{std}\hlopt{::}\hlstd{}\hlkwd{cos}\hlstd{}\hlopt{(}\hlstd{x}\hlopt{{[}}\hlstd{}\hlnum{1}\hlstd{}\hlopt{{]});}\hspace*{\fill}\\
+\hlstd{}\hlopt{\}}\hspace*{\fill}\\ }
+
+\paragraph{then define the derivatives:}
+\paragraph{\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{dfdx\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{}\hlkwd{make\textunderscore derivative}\hlstd{}\hlopt{(\ }\hlstd{fxy}\hlopt{,\ }\hlstd{}\hlnum{0\ }\hlstd{}\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{dfdy\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{}\hlkwd{make\textunderscore derivative}\hlstd{}\hlopt{(\ }\hlstd{fxy}\hlopt{,\ }\hlstd{}\hlnum{1\ }\hlstd{}\hlopt{);}\hspace*{\fill}\\
+}
+
+\paragraph{to evaluate them at the point(1,2), we make an array x[], then call them as normal c functions:}
+\paragraph{\hlstd{\ \ \ \ }\hlstd{}\hlkwb{double\ }\hlstd{x}\hlopt{{[}{]}\ =\ \{\ }\hlstd{}\hlnum{1.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2.0\ }\hlstd{}\hlopt{\};}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{df/dx\ at\ (1.0,\ 2.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{dfdx}\hlstd{}\hlopt{(}\hlstd{x}\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{df/dy\ at\ (1.0,\ 2.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{dfdy}\hlstd{}\hlopt{(}\hlstd{x}\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\}
+
+\subsection{more than functions}
+\paragraph{Our derivative can also deal with functors, lambda objects etc., here is an example with a functor:\\}
+\noindent 
+\ttfamily 
+\paragraph{\hlppc{\#include\ $<$derivative/derivative.hpp$>$}\hspace*{\fill}\\
+\hlppc{\#include\ $<$iostream$>$}\hspace*{\fill}\\
+\hlstd{}\hlppc{\#include\ $<$cmath$>$}\hspace*{\fill}\\
+\hlstd{}\hspace*{\fill}\\
+\hlkwb{struct\ }\hlstd{sfxy}\hspace*{\fill}\\
+\hlopt{\{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{double\ }\hlstd{a}\hlopt{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ }\hlstd{}\hlkwd{sfxy}\hlstd{}\hlopt{(\ }\hlstd{}\hlkwb{double\ }\hlstd{a\textunderscore \ }\hlopt{=\ }\hlstd{}\hlnum{2.0\ }\hlstd{}\hlopt{)\ :\ }\hlstd{}\hlkwd{a}\hlstd{}\hlopt{(}\hlstd{a\textunderscore }\hlopt{)\ \{\}}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{double\ }\hlstd{}\hlkwc{operator}\hlstd{}\hlopt{()(\ }\hlstd{}\hlkwb{double}\hlstd{}\hlopt{{*}\ }\hlstd{x\ }\hlopt{)\ }\hlstd{}\hlkwb{const}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{a\ }\hlopt{{*}\ }\hlstd{std}\hlopt{::}\hlstd{}\hlkwd{sin}\hlstd{}\hlopt{(}\hlstd{x}\hlopt{{[}}\hlstd{}\hlnum{0}\hlstd{}\hlopt{{]})\ {*}\ }\hlstd{std}\hlopt{::}\hlstd{}\hlkwd{cos}\hlstd{}\hlopt{(}\hlstd{x}\hlopt{{[}}\hlstd{}\hlnum{1}\hlstd{}\hlopt{{]});}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlopt{\}}\hspace*{\fill}\\
+\hlstd{}\hlopt{\};}\hspace*{\fill}\\
+\hlstd{}\hspace*{\fill}\\
+\hlkwb{int\ }\hlstd{}\hlkwd{main}\hlstd{}\hlopt{()}\hspace*{\fill}\\
+\hlstd{}\hlopt{\{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{sfxy\ }\hlkwb{const\ }\hlstd{}\hlkwd{fxy}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{5.0\ }\hlstd{}\hlopt{);}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{dfdx\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{}\hlkwd{make\textunderscore derivative}\hlstd{}\hlopt{(\ }\hlstd{fxy}\hlopt{,\ }\hlstd{}\hlnum{0\ }\hlstd{}\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{dfdy\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{}\hlkwd{make\textunderscore derivative}\hlstd{}\hlopt{(\ }\hlstd{fxy}\hlopt{,\ }\hlstd{}\hlnum{1\ }\hlstd{}\hlopt{);}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{double\ }\hlstd{x}\hlopt{{[}{]}\ =\ \{\ }\hlstd{}\hlnum{1.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2.0\ }\hlstd{}\hlopt{\};}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{df/dx\ at\ (1.0,\ 2.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{dfdx}\hlstd{}\hlopt{(}\hlstd{x}\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{df/dy\ at\ (1.0,\ 2.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{dfdy}\hlstd{}\hlopt{(}\hlstd{x}\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlopt{\}}\hspace*{\fill}\\
+\hlstd{}\hspace*{\fill}\\
+\mbox{}
+}
+\normalfont
+\normalsize
+
+\section{Second Derivaitve}
+
+\paragraph{The code creating the second derivative objects is very similar to the code creating the first derivatives, but with one more parameter.\\}
+\paragraph{Second derivatives for a normal c function:\\}
+\noindent
+\ttfamily
+\paragraph{
+\hlkwb{double\ }\hlstd{}\hlkwd{fxyz}\hlstd{}\hlopt{(\ }\hlstd{}\hlkwb{double\ }\hlstd{x}\hlopt{,\ }\hlstd{}\hlkwb{double\ }\hlstd{y}\hlopt{,\ }\hlstd{}\hlkwb{double\ }\hlstd{z\ }\hlopt{)}\hspace*{\fill}\\
+\hlstd{}\hlopt{\{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{std}\hlopt{::}\hlstd{}\hlkwd{sin}\hlstd{}\hlopt{(}\hlstd{std}\hlopt{::}\hlstd{}\hlkwd{pow}\hlstd{}\hlopt{(\ }\hlstd{x}\hlopt{,\ }\hlstd{y\ }\hlopt{)\ {*}\ }\hlstd{z}\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlopt{\}}\hspace*{\fill}\\
+\hlstd{}\hspace*{\fill}\\
+\hlkwb{void\ }\hlstd{}\hlkwd{fxyz\textunderscore test}\hlstd{}\hlopt{()}\hspace*{\fill}\\
+\hlstd{}\hlopt{\{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{fxyz\textunderscore 00\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{make\textunderscore second\textunderscore derivative}\hlopt{$<$}\hlstd{}\hlnum{0}\hlstd{}\hlopt{,}\hlstd{}\hlnum{0}\hlstd{}\hlopt{$>$(\ }\hlstd{fxyz\ }\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{fxyz\textunderscore 01\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{make\textunderscore second\textunderscore derivative}\hlopt{$<$}\hlstd{}\hlnum{0}\hlstd{}\hlopt{,}\hlstd{}\hlnum{1}\hlstd{}\hlopt{$>$(\ }\hlstd{fxyz\ }\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{fxyz\textunderscore 02\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{make\textunderscore second\textunderscore derivative}\hlopt{$<$}\hlstd{}\hlnum{0}\hlstd{}\hlopt{,}\hlstd{}\hlnum{2}\hlstd{}\hlopt{$>$(\ }\hlstd{fxyz\ }\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{fxyz\textunderscore 10\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{make\textunderscore second\textunderscore derivative}\hlopt{$<$}\hlstd{}\hlnum{1}\hlstd{}\hlopt{,}\hlstd{}\hlnum{0}\hlstd{}\hlopt{$>$(\ }\hlstd{fxyz\ }\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{fxyz\textunderscore 11\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{make\textunderscore second\textunderscore derivative}\hlopt{$<$}\hlstd{}\hlnum{1}\hlstd{}\hlopt{,}\hlstd{}\hlnum{1}\hlstd{}\hlopt{$>$(\ }\hlstd{fxyz\ }\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{fxyz\textunderscore 12\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{make\textunderscore second\textunderscore derivative}\hlopt{$<$}\hlstd{}\hlnum{1}\hlstd{}\hlopt{,}\hlstd{}\hlnum{2}\hlstd{}\hlopt{$>$(\ }\hlstd{fxyz\ }\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{fxyz\textunderscore 20\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{make\textunderscore second\textunderscore derivative}\hlopt{$<$}\hlstd{}\hlnum{2}\hlstd{}\hlopt{,}\hlstd{}\hlnum{0}\hlstd{}\hlopt{$>$(\ }\hlstd{fxyz\ }\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{fxyz\textunderscore 21\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{make\textunderscore second\textunderscore derivative}\hlopt{$<$}\hlstd{}\hlnum{2}\hlstd{}\hlopt{,}\hlstd{}\hlnum{1}\hlstd{}\hlopt{$>$(\ }\hlstd{fxyz\ }\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{fxyz\textunderscore 22\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{make\textunderscore second\textunderscore derivative}\hlopt{$<$}\hlstd{}\hlnum{2}\hlstd{}\hlopt{,}\hlstd{}\hlnum{2}\hlstd{}\hlopt{$>$(\ }\hlstd{fxyz\ }\hlopt{);}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{fxyz\textunderscore 00\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{fxyz\textunderscore 00}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{3.0\ }\hlstd{}\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{fxyz\textunderscore 01\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{fxyz\textunderscore 01}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{3.0\ }\hlstd{}\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{fxyz\textunderscore 02\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{fxyz\textunderscore 02}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{3.0\ }\hlstd{}\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{fxyz\textunderscore 10\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{fxyz\textunderscore 10}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{3.0\ }\hlstd{}\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{fxyz\textunderscore 11\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{fxyz\textunderscore 11}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{3.0\ }\hlstd{}\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{fxyz\textunderscore 12\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{fxyz\textunderscore 12}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{3.0\ }\hlstd{}\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{fxyz\textunderscore 20\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{fxyz\textunderscore 20}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{3.0\ }\hlstd{}\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{fxyz\textunderscore 21\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{fxyz\textunderscore 21}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{3.0\ }\hlstd{}\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{fxyz\textunderscore 22\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{fxyz\textunderscore 22}\hlstd{}\hlopt{(\ }\hlstd{}\hlnum{1.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{3.0\ }\hlstd{}\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlopt{\}}\hspace*{\fill}\\
+\hlstd{}\hspace*{\fill}\\
+}
+\normalfont
+\normalsize
+
+\paragraph{And for a function receiving a pointer as parameter:\\}
+\noindent
+\ttfamily
+\paragraph{
+\hlkwb{double\ }\hlstd{}\hlkwd{gxyz}\hlstd{}\hlopt{(\ }\hlstd{}\hlkwb{double}\hlstd{}\hlopt{{*}\ }\hlstd{x\ }\hlopt{)}\hspace*{\fill}\\
+\hlstd{}\hlopt{\{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{std}\hlopt{::}\hlstd{}\hlkwd{sin}\hlstd{}\hlopt{(}\hlstd{std}\hlopt{::}\hlstd{}\hlkwd{pow}\hlstd{}\hlopt{(\ }\hlstd{x}\hlopt{{[}}\hlstd{}\hlnum{0}\hlstd{}\hlopt{{]},\ }\hlstd{x}\hlopt{{[}}\hlstd{}\hlnum{1}\hlstd{}\hlopt{{]}\ )\ {*}\ }\hlstd{x}\hlopt{{[}}\hlstd{}\hlnum{2}\hlstd{}\hlopt{{]}\ );}\hspace*{\fill}\\
+\hlstd{}\hlopt{\}}\hspace*{\fill}\\
+\hlstd{}\hspace*{\fill}\\
+\hlkwb{void\ }\hlstd{}\hlkwd{gxyz\textunderscore test}\hlstd{}\hlopt{()}\hspace*{\fill}\\
+\hlstd{}\hlopt{\{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{gxyz\textunderscore 00\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{}\hlkwd{make\textunderscore second\textunderscore derivative}\hlstd{}\hlopt{(\ }\hlstd{gxyz}\hlopt{,\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{0\ }\hlstd{}\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{gxyz\textunderscore 01\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{}\hlkwd{make\textunderscore second\textunderscore derivative}\hlstd{}\hlopt{(\ }\hlstd{gxyz}\hlopt{,\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{1\ }\hlstd{}\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{gxyz\textunderscore 02\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{}\hlkwd{make\textunderscore second\textunderscore derivative}\hlstd{}\hlopt{(\ }\hlstd{gxyz}\hlopt{,\ }\hlstd{}\hlnum{0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2\ }\hlstd{}\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{gxyz\textunderscore 10\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{}\hlkwd{make\textunderscore second\textunderscore derivative}\hlstd{}\hlopt{(\ }\hlstd{gxyz}\hlopt{,\ }\hlstd{}\hlnum{1}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{0\ }\hlstd{}\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{gxyz\textunderscore 11\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{}\hlkwd{make\textunderscore second\textunderscore derivative}\hlstd{}\hlopt{(\ }\hlstd{gxyz}\hlopt{,\ }\hlstd{}\hlnum{1}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{1\ }\hlstd{}\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{gxyz\textunderscore 12\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{}\hlkwd{make\textunderscore second\textunderscore derivative}\hlstd{}\hlopt{(\ }\hlstd{gxyz}\hlopt{,\ }\hlstd{}\hlnum{1}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2\ }\hlstd{}\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{gxyz\textunderscore 20\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{}\hlkwd{make\textunderscore second\textunderscore derivative}\hlstd{}\hlopt{(\ }\hlstd{gxyz}\hlopt{,\ }\hlstd{}\hlnum{2}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{0\ }\hlstd{}\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{gxyz\textunderscore 21\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{}\hlkwd{make\textunderscore second\textunderscore derivative}\hlstd{}\hlopt{(\ }\hlstd{gxyz}\hlopt{,\ }\hlstd{}\hlnum{2}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{1\ }\hlstd{}\hlopt{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{auto\ }\hlstd{}\hlkwb{const}\hlstd{}\hlopt{\&\ }\hlstd{gxyz\textunderscore 22\ }\hlopt{=\ }\hlstd{numeric}\hlopt{::}\hlstd{}\hlkwd{make\textunderscore second\textunderscore derivative}\hlstd{}\hlopt{(\ }\hlstd{gxyz}\hlopt{,\ }\hlstd{}\hlnum{2}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2\ }\hlstd{}\hlopt{);}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ }\hlstd{}\hlkwb{double\ }\hlstd{x}\hlopt{{[}{]}\ =\ \{\ }\hlstd{}\hlnum{1.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{2.0}\hlstd{}\hlopt{,\ }\hlstd{}\hlnum{3.0\ }\hlstd{}\hlopt{\};}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{gxyz\textunderscore 00\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{gxyz\textunderscore 00}\hlstd{}\hlopt{(\ }\hlstd{x\ }\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{gxyz\textunderscore 01\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{gxyz\textunderscore 01}\hlstd{}\hlopt{(\ }\hlstd{x\ }\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{gxyz\textunderscore 02\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{gxyz\textunderscore 02}\hlstd{}\hlopt{(\ }\hlstd{x\ }\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{gxyz\textunderscore 10\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{gxyz\textunderscore 10}\hlstd{}\hlopt{(\ }\hlstd{x\ }\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{gxyz\textunderscore 11\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{gxyz\textunderscore 11}\hlstd{}\hlopt{(\ }\hlstd{x\ }\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{gxyz\textunderscore 12\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{gxyz\textunderscore 12}\hlstd{}\hlopt{(\ }\hlstd{x\ }\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{gxyz\textunderscore 20\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{gxyz\textunderscore 20}\hlstd{}\hlopt{(\ }\hlstd{x\ }\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{gxyz\textunderscore 21\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{gxyz\textunderscore 21}\hlstd{}\hlopt{(\ }\hlstd{x\ }\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{std}\hlopt{::}\hlstd{cout\ }\hlopt{$<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{gxyz\textunderscore 22\ at(1.0,\ 2.0,\ 3.0)\ is\ "}\hlstd{\ }\hlopt{$<$$<$\ }\hlstd{}\hlkwd{gxyz\textunderscore 22}\hlstd{}\hlopt{(\ }\hlstd{x\ }\hlopt{)\ $<$$<$\ }\hlstd{}\hlstr{"}\hlesc{$\backslash$n}\hlstr{"}\hlstd{}\hlopt{;}\hspace*{\fill}\\
+\hlstd{}\hlopt{\}}\hspace*{\fill}\\
+}
+\normalfont
+\normalsize
+
+
+
+\end{document}
+
