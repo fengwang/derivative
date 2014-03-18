@@ -1,4 +1,5 @@
-\documentclass[9pt,onside,a4paper]{article}
+\documentclass[9pt,onside]{article}
+%\documentclass[9pt,onside,a4paper]{article}
 %\usepackage[timestamp,first]{draftcopy}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
@@ -13,6 +14,8 @@
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
 \usepackage{fullpage}
 \usepackage{xtab}
+
+\usepackage[paperwidth=210mm, paperheight=880mm, margin=25mm]{geometry}
 
 \newcommand{\hlstd}[1]{\textcolor[rgb]{0.2,0,0.4}{#1}}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.2,0.73,0.02}{#1}}
@@ -35,9 +38,10 @@
 
 
 \author{Wang Feng}
-\title{Derivative Tutorial}
+\title{Derivative Library Tutorial}
 \begin{document}
-%\maketitle
+\maketitle
+\pagenumbering{gobble}
 
 \section{Headers, Namespace and Compilation}
 
